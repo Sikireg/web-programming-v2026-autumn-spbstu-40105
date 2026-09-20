@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Лабораторная работа 4</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Лабораторная работа 4</h1>
+      <form data-testid="entity-form">
+        <input type="number" name="id" placeholder="ID" required />
+        <input type="text" name="name" placeholder="Название" required />
+        <select name="size" required>
+          <option value="">— размер —</option>
+          <option value="S">S</option>
+          <option value="M">M</option>
+          <option value="L">L</option>
+          <option value="XL">XL</option>
+        </select>
+        <button type="submit">Добавить товар</button>
+      </form>
+      <form data-testid="color-form">
+        <input type="number" name="itemId" placeholder="ID товара" required />
+        <input type="text" name="color" placeholder="Цвет" required />
+        <button type="submit" data-action="add">Добавить цвет</button>
+        <button type="button" data-action="remove">Удалить цвет</button>
+      </form>
+      <section
+        data-testid="entity-list"
+        aria-label="Список элементов"
+      ></section>
+    </main>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>
