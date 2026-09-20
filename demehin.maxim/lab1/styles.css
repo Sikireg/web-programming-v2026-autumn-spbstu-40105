@@ -1,0 +1,33 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+main ul {
+  list-style: none;
+}
+
+main ul li {
+  display: inline;
+}
+
+main ul li a {
+  color: #0056ff;
+  text-decoration: none;
+}
+
+main ul li a:hover {
+  text-decoration: underline;
+}
+
+main ul li:last-child span {
+  color: #333;
+}
+
+main ul li:not(:last-child)::after {
+  content: ' > ';
+  color: #333;
+}
