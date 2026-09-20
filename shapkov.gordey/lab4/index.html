@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Лабораторная работа 4</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Лабораторная работа 4</h1>
+
+      <form data-testid="library-form">
+        <input
+          type="text"
+          name="name"
+          placeholder="Название библиотеки"
+          required
+        />
+        <button type="submit">Добавить библиотеку</button>
+      </form>
+
+      <hr class="separator" />
+
+      <form data-testid="entity-form">
+        <input type="text" name="name" placeholder="Название книги" required />
+        <input type="text" name="author" placeholder="Автор" />
+        <input type="number" name="year" placeholder="Год издания" />
+        <input type="text" name="genre" placeholder="Жанр" />
+        <select name="libraryName">
+          <option value="">Выберите библиотеку</option>
+        </select>
+        <button type="submit">Добавить книгу</button>
+      </form>
+
+      <section
+        data-testid="entity-list"
+        aria-label="Список элементов"
+      ></section>
+    </main>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>
