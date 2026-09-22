@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Лабораторная работа 4</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Товарищи</h1>
+      <form id="entity-form" class="entity-form" data-testid="entity-form">
+        <label
+          >ID <input type="number" name="id" min="1" step="1" required
+        /></label>
+        <label>Имя <input type="text" name="name" required /></label>
+        <button type="submit" class="entity-form-submit">Добавить</button>
+      </form>
+      <div id="entity-list" class="entity-list" data-testid="entity-list"></div>
+    </main>
+    <template id="card-template">
+      <article class="entity-card" data-testid="entity-card">
+        <h3 class="entity-card-name">Имя</h3>
+        <p class="entity-card-id"></p>
+        <p class="entity-card-friends-title"></p>
+        <ul class="entity-card-friends"></ul>
+        <div class="friend-form">
+          <select class="friend-form-select"></select>
+          <button type="button" class="friend-form-add">Добавить друга</button>
+        </div>
+        <button type="button" class="delete-entity" data-testid="delete-entity">
+          Удалить пользователя
+        </button>
+      </article>
+    </template>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

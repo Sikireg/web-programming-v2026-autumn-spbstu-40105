@@ -1,0 +1,27 @@
+.nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-item {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #333;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+  color: #06c;
+  outline: 2px solid #06c;
+  outline-offset: 2px;
+}
+
+.nav-link.active {
+  color: #06c;
+  font-weight: bold;
+}

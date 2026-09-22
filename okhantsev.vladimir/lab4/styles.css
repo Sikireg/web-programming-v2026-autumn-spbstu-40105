@@ -1,0 +1,160 @@
+:root {
+  --card-bg: #fff;
+  --card-border: #d6d6d6;
+  --bg: #f4f4f4;
+  --text: #1f1f1f;
+  --accent: #0056ff;
+  --danger: #d9534f;
+  --radius: 8px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.entity-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr)) auto;
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 32px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.entity-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.entity-form input {
+  padding: 8px 10px;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  font-size: 14px;
+}
+
+.entity-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.entity-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: clamp(340px, 50vh, 480px);
+  overflow: hidden;
+}
+
+.entity-card-name {
+  margin: 0;
+  font-size: 18px;
+}
+
+.entity-card-id {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.entity-card-friends-title {
+  margin: 4px 0 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.entity-card-friends {
+  margin: 0;
+  padding: 0 4px 0 20px;
+  font-size: 14px;
+  list-style: none;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.entity-card-friend {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.entity-card-friend:last-child {
+  border-bottom: none;
+}
+
+.friend-remove {
+  background: none;
+  color: var(--danger);
+  padding: 2px 6px;
+  font-size: 12px;
+}
+
+.friend-remove:hover {
+  color: #c9302c;
+}
+
+.delete-entity {
+  margin-top: auto;
+  width: 100%;
+  background: var(--danger);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #fff;
+  background: var(--accent);
+}
+
+button:hover {
+  background: #417ffb;
+}
+
+.delete-entity:hover {
+  background: #c9302c;
+}
+
+.friend-form {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+  align-items: end;
+}
+
+.friend-form-select {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  font-size: 14px;
+}
