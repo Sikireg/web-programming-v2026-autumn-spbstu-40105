@@ -1,4 +1,4 @@
-function isPerfectNumber(num) {
+export function isPerfectNumber(num) {
     if (num <= 0 || !Number.isInteger(num)) {
         return false;
     }
@@ -13,3 +13,4 @@ function isPerfectNumber(num) {
 
     return sum === num;
 }
+
