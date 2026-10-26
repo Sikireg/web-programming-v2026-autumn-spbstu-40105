@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 4: Рецепты</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>Управление рецептами</h1>
+
+  <form data-testid="entity-form" id="recipe-form">
+    <div class="form-group">
+      <label for="title">Название:</label>
+      <input type="text" id="title" name="title" required placeholder="Например: Борщ">
+    </div>
+    <div class="form-group">
+      <label for="ingredients">Ингредиенты (через запятую):</label>
+      <textarea id="ingredients" name="ingredients" required placeholder="Свекла, Капуста, Картофель"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="steps">Шаги (каждый с новой строки):</label>
+      <textarea id="steps" name="steps" required placeholder="Нарезать овощи&#10;Сварить бульон"></textarea>
+    </div>
+    <button type="submit">Добавить рецепт</button>
+  </form>
+
+  <div data-testid="entity-list" id="recipe-list"></div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
