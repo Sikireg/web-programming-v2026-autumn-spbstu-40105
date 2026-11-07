@@ -22,8 +22,8 @@ export class Recipe {
 
     removeIngredient(ingredient: string): void {
         const i = this.ingredients.indexOf(ingredient);
-        if (i != -1) {
-            this.ingredients.slice(i, 1);
+        if (i !== -1) {
+            this.ingredients.splice(i, 1);
         }
     }
 
