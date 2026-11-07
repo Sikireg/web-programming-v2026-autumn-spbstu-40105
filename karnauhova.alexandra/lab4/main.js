@@ -3,7 +3,6 @@ import { Recipe } from './model.js';
 const STORAGE_KEY = 'lab4_recipes';
 let recipes = [];
 
-// Загрузка состояния из localStorage
 function loadState() {
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved) {
@@ -17,12 +16,10 @@ function loadState() {
   }
 }
 
-// Сохранение состояния в localStorage
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(recipes));
 }
 
-// Обертка для асинхронных операций (Promise + setTimeout)
 function asyncOperation(operation) {
   return new Promise(resolve => {
     setTimeout(() => {
@@ -30,11 +27,10 @@ function asyncOperation(operation) {
       saveState();
       render();
       resolve();
-    }, 100); // Небольшая задержка для имитации асинхронности
+    }, 100);
   });
 }
 
-// Рендеринг списка рецептов
 function render() {
   const list = document.querySelector('[data-testid="entity-list"]');
   list.innerHTML = '';
@@ -46,24 +42,32 @@ function render() {
 
     card.innerHTML = `
       <h3>${recipe.title}</h3>
-      <p><strong>Ингредиенты (${recipe.ingredientCount}):</strong> ${recipe.ingredients.join(', ') || 'Нет'}</p>
+      <p><strong>Ингредиенты (${recipe.ingredientCount}):</strong> ${recipe.ingredients.length > 0 ? recipe.ingredients.join(', ') : 'Нет'}</p>
       <p><strong>Шаги (${recipe.steps.length}):</strong></p>
       <ol class="steps-list">
         ${recipe.steps.map(step => `<li>${step}</li>`).join('')}
       </ol>
+      
       <div class="card-actions">
-        <button data-action="add-ing" data-index="${index}">Добавить ингредиент</button>
-        <button data-action="remove-ing" data-index="${index}">Удалить ингредиент</button>
-        <button data-action="add-step" data-index="${index}">Добавить шаг</button>
-        <button data-action="remove-step" data-index="${index}">Удалить шаг</button>
-        <button data-testid="delete-entity" data-action="delete" data-index="${index}" class="btn-danger">Удалить рецепт</button>
+        <div class="action-row">
+          <input type="text" data-field="new-ing" placeholder="Название ингредиента" />
+          <button data-action="add-ing" data-index="${index}">Добавить ингредиент</button>
+          <button data-action="remove-ing" data-index="${index}">Удалить ингредиент</button>
+        </div>
+        <div class="action-row">
+          <input type="text" data-field="new-step" placeholder="Описание шага" />
+          <button data-action="add-step" data-index="${index}">Добавить шаг</button>
+          <button data-action="remove-step" data-index="${index}">Удалить шаг</button>
+        </div>
+        <div class="action-row">
+          <button data-testid="delete-entity" data-action="delete" data-index="${index}" class="btn-danger">Удалить рецепт</button>
+        </div>
       </div>
     `;
     list.appendChild(card);
   });
 }
 
-// Инициализация
 document.addEventListener('DOMContentLoaded', () => {
   loadState();
   render();
@@ -71,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('[data-testid="entity-form"]');
   const list = document.querySelector('[data-testid="entity-list"]');
 
-  // Обработка добавления нового рецепта
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const formData = new FormData(form);
@@ -101,37 +104,50 @@ document.addEventListener('DOMContentLoaded', () => {
     const action = btn.dataset.action;
     const index = parseInt(btn.dataset.index, 10);
     const recipe = recipes[index];
+    const card = btn.closest('[data-testid="entity-card"]');
 
     if (action === 'delete') {
       asyncOperation(() => {
         recipes.splice(index, 1);
       });
-    } else if (action === 'add-ing') {
-      const ing = prompt('Введите новый ингредиент:');
-      if (ing) {
+    } 
+    else if (action === 'add-ing') {
+      const input = card.querySelector('[data-field="new-ing"]');
+      const val = input.value.trim();
+      if (val) {
         asyncOperation(() => {
-          recipe.addIngredient(ing.trim());
+          recipe.addIngredient(val);
+          input.value = '';
         });
       }
-    } else if (action === 'remove-ing') {
-      const ing = prompt('Введите ингредиент для удаления:');
-      if (ing) {
+    } 
+    else if (action === 'remove-ing') {
+      const input = card.querySelector('[data-field="new-ing"]');
+      const val = input.value.trim();
+      if (val) {
         asyncOperation(() => {
-          recipe.removeIngredient(ing.trim());
+          recipe.removeIngredient(val);
+          input.value = '';
         });
       }
-    } else if (action === 'add-step') {
-      const step = prompt('Введите новый шаг:');
-      if (step) {
+    } 
+    else if (action === 'add-step') {
+      const input = card.querySelector('[data-field="new-step"]');
+      const val = input.value.trim();
+      if (val) {
         asyncOperation(() => {
-          recipe.addStep(step.trim());
+          recipe.addStep(val);
+          input.value = '';
         });
       }
-    } else if (action === 'remove-step') {
-      const step = prompt('Введите шаг для удаления (точно как в списке):');
-      if (step) {
+    } 
+    else if (action === 'remove-step') {
+      const input = card.querySelector('[data-field="new-step"]');
+      const val = input.value.trim();
+      if (val) {
         asyncOperation(() => {
-          recipe.removeStep(step.trim());
+          recipe.removeStep(val);
+          input.value = '';
         });
       }
     }
