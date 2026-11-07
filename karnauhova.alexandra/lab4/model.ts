@@ -40,4 +40,50 @@ export class Recipe {
             this.steps.splice(index, 1);
         }
     }
+
+    get stepCount(): number {
+        return this.steps.length;
+    }
+}
+
+export function groupRecipesByIngredientCount(recipes: Recipe[]): Map<number, Recipe[]> {
+    const map = new Map<number, Recipe[]>();
+    for (const r of recipes) {
+        const key = r.ingredientCount
+        const group = map.get(key);
+        if (group) {
+            group.push(r);
+        }
+        else {
+            map.set(key, [r]);
+        }
+    }
+    return map;
+}
+
+export function getUniqueIngredients(recipes: Recipe[]): string[] {
+    return [...new Set(recipes.flatMap((r) => r.ingredients))];
+}
+
+export function findRecipesByIngredient(recipes: Recipe[], ingredient: string): Recipe[] {
+    return recipes.filter((r) => r.ingredients.includes(ingredient));
+}
+
+export function groupRecipesByStepCount(recipes: Recipe[]): Map<number, Recipe[]> {
+    const map = new Map<number, Recipe[]>();
+    for (const r of recipes) {
+        const key = r.stepCount;
+        const group = map.get(key);
+        if (group) {
+            group.push(r);
+        }
+        else {
+            map.set(key, [r]);
+        }
+    }
+    return map;
+}
+
+export function getRecipeTitles(recipes: Recipe[]): string[] {
+    return recipes.map((r) => r.title);
 }
