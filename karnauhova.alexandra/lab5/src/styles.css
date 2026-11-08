@@ -1,0 +1,101 @@
+:root {
+  --page: #dfe5ec;
+  --body: #1f2636;
+  --digit: #2f3850;
+  --digit-hover: #3a4562;
+  --fn: #566383;
+  --fn-hover: #66749a;
+  --op: #f2a93b;
+  --op-hover: #ffbc57;
+  --equals: #2fb996;
+  --equals-hover: #43cfaa;
+  --text: #f3f5f9;
+  --muted: #9aa6c2;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--page);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.app {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.calculator {
+  width: 100%;
+  max-width: 340px;
+  padding: 18px;
+  border-radius: 28px;
+  background: var(--body);
+  box-shadow: 0 24px 48px rgba(31, 38, 54, 0.35);
+}
+
+.display {
+  padding: 12px 10px 18px;
+  text-align: right;
+  color: var(--text);
+}
+
+.expression {
+  min-height: 1.4em;
+  font-size: 1rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.value {
+  display: block;
+  font-size: 3rem;
+  font-weight: 300;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.value-long { font-size: 2rem; }
+
+.keys {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.key {
+  height: 64px;
+  border: 0;
+  border-radius: 18px;
+  font: inherit;
+  font-size: 1.4rem;
+  color: var(--text);
+  background: var(--digit);
+  cursor: pointer;
+  transition: background 0.12s, transform 0.08s;
+}
+.key:hover { background: var(--digit-hover); }
+.key:active { transform: scale(0.95); }
+.key:focus-visible { outline: 3px solid var(--equals); outline-offset: 2px; }
+
+.key.fn { background: var(--fn); }
+.key.fn:hover { background: var(--fn-hover); }
+
+.key.op { background: var(--op); color: #2b1d00; font-size: 1.7rem; }
+.key.op:hover { background: var(--op-hover); }
+/* выбранная операция подсвечивается, пока вводится второе число */
+.key.op.active { background: var(--text); color: var(--op); }
+
+.key.equals { background: var(--equals); color: #06261d; font-size: 1.7rem; }
+.key.equals:hover { background: var(--equals-hover); }
+
+.key.zero { grid-column: span 2; text-align: left; padding-left: 28px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .key { transition: none; }
+}
