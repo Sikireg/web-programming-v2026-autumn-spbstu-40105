@@ -13,13 +13,20 @@
   --muted: #9aa6c2;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
   min-height: 100vh;
   background: var(--page);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
 }
 
 .app {
@@ -63,7 +70,9 @@ body {
   white-space: nowrap;
   width: 100%;
 }
-.value-long { font-size: 2rem; }
+.value-long {
+  font-size: 2rem;
+}
 
 .keys {
   display: grid;
@@ -80,25 +89,59 @@ body {
   color: var(--text);
   background: var(--digit);
   cursor: pointer;
-  transition: background 0.12s, transform 0.08s;
+  transition:
+    background 0.12s,
+    transform 0.08s;
 }
-.key:hover { background: var(--digit-hover); }
-.key:active { transform: scale(0.95); }
-.key:focus-visible { outline: 3px solid var(--equals); outline-offset: 2px; }
+.key:hover {
+  background: var(--digit-hover);
+}
+.key:active {
+  transform: scale(0.95);
+}
+.key:focus-visible {
+  outline: 3px solid var(--equals);
+  outline-offset: 2px;
+}
 
-.key.fn { background: var(--fn); }
-.key.fn:hover { background: var(--fn-hover); }
+.key.fn {
+  background: var(--fn);
+}
+.key.fn:hover {
+  background: var(--fn-hover);
+}
 
-.key.op { background: var(--op); color: #2b1d00; font-size: 1.7rem; }
-.key.op:hover { background: var(--op-hover); }
+.key.op {
+  background: var(--op);
+  color: #2b1d00;
+  font-size: 1.7rem;
+}
+.key.op:hover {
+  background: var(--op-hover);
+}
 /* выбранная операция подсвечивается, пока вводится второе число */
-.key.op.active { background: var(--text); color: var(--op); }
+.key.op.active {
+  background: var(--text);
+  color: var(--op);
+}
 
-.key.equals { background: var(--equals); color: #06261d; font-size: 1.7rem; }
-.key.equals:hover { background: var(--equals-hover); }
+.key.equals {
+  background: var(--equals);
+  color: #06261d;
+  font-size: 1.7rem;
+}
+.key.equals:hover {
+  background: var(--equals-hover);
+}
 
-.key.zero { grid-column: span 2; text-align: left; padding-left: 28px; }
+.key.zero {
+  grid-column: span 2;
+  text-align: left;
+  padding-left: 28px;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .key { transition: none; }
+  .key {
+    transition: none;
+  }
 }
