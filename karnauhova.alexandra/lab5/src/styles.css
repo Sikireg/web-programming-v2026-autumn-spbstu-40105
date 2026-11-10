@@ -42,7 +42,7 @@ body {
   padding: 18px;
   border-radius: 28px;
   background: var(--body);
-  box-shadow: 0 24px 48px rgba(31, 38, 54, 0.35);
+  box-shadow: 0 24px 48px rgb(31 38 54 / 0.35);
 }
 
 .display {
@@ -70,6 +70,7 @@ body {
   white-space: nowrap;
   width: 100%;
 }
+
 .value-long {
   font-size: 2rem;
 }
@@ -93,12 +94,15 @@ body {
     background 0.12s,
     transform 0.08s;
 }
+
 .key:hover {
   background: var(--digit-hover);
 }
+
 .key:active {
   transform: scale(0.95);
 }
+
 .key:focus-visible {
   outline: 3px solid var(--equals);
   outline-offset: 2px;
@@ -107,6 +111,7 @@ body {
 .key.fn {
   background: var(--fn);
 }
+
 .key.fn:hover {
   background: var(--fn-hover);
 }
@@ -116,9 +121,11 @@ body {
   color: #2b1d00;
   font-size: 1.7rem;
 }
+
 .key.op:hover {
   background: var(--op-hover);
 }
+
 /* выбранная операция подсвечивается, пока вводится второе число */
 .key.op.active {
   background: var(--text);
@@ -130,6 +137,7 @@ body {
   color: #06261d;
   font-size: 1.7rem;
 }
+
 .key.equals:hover {
   background: var(--equals-hover);
 }

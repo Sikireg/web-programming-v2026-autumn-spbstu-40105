@@ -37,6 +37,9 @@
     ]
   },
   "devDependencies": {
+    "eslint": "^8.57.1",
+    "prettier": "^3.9.10",
+    "stylelint": "^16.26.1",
     "webpack": "^5.112.2"
   }
 }

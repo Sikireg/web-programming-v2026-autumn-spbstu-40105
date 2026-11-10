@@ -1,10 +1,10 @@
 // Чистая логика калькулятора: reducer без обращения к DOM.
 
 export const OPERATIONS = {
-  add: {symbol: '+', apply: (a, b) => a + b},
-  subtract: {symbol: '−', apply: (a, b) => a - b},
-  multiply: {symbol: '×', apply: (a, b) => a * b},
-  divide: {symbol: '÷', apply: (a, b) => a / b},
+  add: { symbol: '+', apply: (a, b) => a + b },
+  subtract: { symbol: '−', apply: (a, b) => a - b },
+  multiply: { symbol: '×', apply: (a, b) => a * b },
+  divide: { symbol: '÷', apply: (a, b) => a / b },
 };
 
 export const ERROR = 'Ошибка';
@@ -37,11 +37,13 @@ export function reducer(state, action) {
           expression: state.previous === null ? '' : state.expression,
         };
       }
-      if (state.current.replace(/[-.]/g, '').length >= MAX_LENGTH) return state;
+      if (state.current.replace(/[-.]/g, '').length >= MAX_LENGTH) {
+        return state;
+      }
       return {
         ...state,
         current:
-          state.current === '0' ? action.value : state.current + action.value,
+          state.current === '0' ? action.value : `${state.current}${action.value}`,
       };
     }
 
@@ -54,12 +56,16 @@ export function reducer(state, action) {
           expression: state.previous === null ? '' : state.expression,
         };
       }
-      if (state.current.includes('.')) return state;
-      return {...state, current: state.current + '.'};
+      if (state.current.includes('.')) {
+        return state;
+      }
+      return { ...state, current: `${state.current}.` };
     }
 
     case 'operation': {
-      if (isError) return state;
+      if (isError) {
+        return state;
+      }
       const symbol = OPERATIONS[action.value].symbol;
 
       // Оператор нажат дважды подряд — просто меняем его
@@ -75,7 +81,9 @@ export function reducer(state, action) {
       // Цепочка 2 + 3 + ... — сначала считаем предыдущий шаг
       if (state.previous !== null && state.operation) {
         left = compute(state.previous, left, state.operation);
-        if (!Number.isFinite(left)) return {...initialState, current: ERROR};
+        if (!Number.isFinite(left)) {
+          return { ...initialState, current: ERROR };
+        }
       }
       return {
         current: format(left),
@@ -87,10 +95,14 @@ export function reducer(state, action) {
     }
 
     case 'equals': {
-      if (isError || state.previous === null || !state.operation) return state;
+      if (isError || state.previous === null || !state.operation) {
+        return state;
+      }
       const right = parseFloat(state.current);
       const result = compute(state.previous, right, state.operation);
-      if (!Number.isFinite(result)) return {...initialState, current: ERROR};
+      if (!Number.isFinite(result)) {
+        return { ...initialState, current: ERROR };
+      }
       return {
         current: format(result),
         previous: null,
@@ -101,7 +113,9 @@ export function reducer(state, action) {
     }
 
     case 'percent': {
-      if (isError) return state;
+      if (isError) {
+        return state;
+      }
       const value = parseFloat(state.current);
       let result;
       if (
@@ -120,23 +134,29 @@ export function reducer(state, action) {
     }
 
     case 'sign': {
-      if (isError || state.current === '0') return state;
+      if (isError || state.current === '0') {
+        return state;
+      }
       const current = state.current.startsWith('-')
         ? state.current.slice(1)
-        : '-' + state.current;
-      return {...state, current};
+        : `-${state.current}`;
+      return { ...state, current };
     }
 
     case 'backspace': {
-      if (isError || state.overwrite) return state;
+      if (isError || state.overwrite) {
+        return state;
+      }
       const next = state.current.slice(0, -1);
-      return {...state, current: next === '' || next === '-' ? '0' : next};
+      return { ...state, current: next === '' || next === '-' ? '0' : next };
     }
 
-    case 'clear':
+    case 'clear': {
       return initialState;
+    }
 
-    default:
+    default: {
       return state;
+    }
   }
 }
