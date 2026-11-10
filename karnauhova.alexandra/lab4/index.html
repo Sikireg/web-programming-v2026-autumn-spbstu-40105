@@ -1,37 +1,40 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Рецепты</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <main>
-    <header class="hero">
-      <h1>Книга <span>рецептов</span></h1>
-      <p>Создавайте рецепты, редактируйте ингредиенты и шаги</p>
-    </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Рецепты</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main>
+      <header class="hero">
+        <h1>Книга <span>рецептов</span></h1>
+        <p>Создавайте рецепты, редактируйте ингредиенты и шаги</p>
+      </header>
 
-    <form data-testid="entity-form">
-      <h2>Новый рецепт</h2>
-      <div class="fields">
-        <label>Название
-          <input name="title" placeholder="Например, Борщ" required>
-        </label>
-        <label>Ингредиенты (через запятую или с новой строки)
-          <textarea name="ingredients" rows="4" placeholder="свёкла, капуста, картофель"></textarea>
-        </label>
-        <label>Шаги (каждый с новой строки)
-          <textarea name="steps" rows="4" placeholder="Нарезать овощи&#10;Сварить бульон"></textarea>
-        </label>
-      </div>
-      <button type="submit" class="btn-primary">Создать рецепт</button>
-    </form>
+      <form data-testid="entity-form">
+        <h2>Новый рецепт</h2>
+        <div class="fields">
+          <label>
+            Название
+            <input type="text" name="title" placeholder="Например, Борщ" required />
+          </label>
+          <label>
+            Ингредиенты (через запятую или с новой строки)
+            <textarea name="ingredients" rows="4" placeholder="свёкла, капуста, картофель"></textarea>
+          </label>
+          <label>
+            Шаги (каждый с новой строки)
+            <textarea name="steps" rows="4" placeholder="Нарезать овощи&#10;Сварить бульон"></textarea>
+          </label>
+        </div>
+        <button type="submit" class="btn-primary">Создать рецепт</button>
+      </form>
 
-    <section id="summary" class="summary"></section>
-    <section data-testid="entity-list" class="list"></section>
-  </main>
-  <script type="module" src="main.js"></script>
-</body>
+      <section id="summary" class="summary"></section>
+      <section data-testid="entity-list" class="list"></section>
+    </main>
+    <script type="module" src="main.ts"></script>
+  </body>
 </html>

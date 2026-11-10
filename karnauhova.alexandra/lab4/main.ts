@@ -25,10 +25,13 @@ function save(): void {
 function load(): Recipe[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
+    if (!raw) {
+      return [];
+    }
     const data: unknown = JSON.parse(raw);
-    if (!Array.isArray(data)) return [];
-    // JSON возвращает «голые» объекты — восстанавливаем экземпляры класса
+    if (!Array.isArray(data)) {
+      return [];
+    }
     return data.map(
       (d: { id?: string; title?: string; ingredients?: string[]; steps?: string[] }) =>
         new Recipe(String(d.title ?? ""), d.ingredients ?? [], d.steps ?? [], d.id),
@@ -38,7 +41,6 @@ function load(): Recipe[] {
   }
 }
 
-// ---------- Асинхронность: Promise + setTimeout ----------
 function runAsync<T>(action: () => T, ms = 300): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     setTimeout(() => {
@@ -51,7 +53,6 @@ function runAsync<T>(action: () => T, ms = 300): Promise<T> {
   });
 }
 
-// Общая обёртка: изменить данные -> сохранить -> перерисовать
 async function mutate(action: () => void): Promise<void> {
   await runAsync(action);
   save();
@@ -67,9 +68,20 @@ const removeIngredient = (id: string, v: string) => mutate(() => byId(id)?.remov
 const addStep = (id: string, v: string) => mutate(() => byId(id)?.addStep(v));
 const removeStep = (id: string, n: number) => mutate(() => byId(id)?.removeStep(n - 1));
 
-// ---------- Рендер ----------
 function esc(s: string): string {
   return s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+}
+
+function plural(n: number, forms: [string, string, string]): string {
+  const n10 = n % 10;
+  const n100 = n % 100;
+  if (n10 === 1 && n100 !== 11) {
+    return forms[0];
+  }
+  if (n10 >= 2 && n10 <= 4 && (n100 < 10 || n100 >= 20)) {
+    return forms[1];
+  }
+  return forms[2];
 }
 
 function cardHtml(r: Recipe): string {
@@ -77,37 +89,46 @@ function cardHtml(r: Recipe): string {
   <article class="card" data-testid="entity-card" data-id="${esc(r.id)}">
     <div class="card-head">
       <h3>${esc(r.title)}</h3>
-      <div class="badges">
-      <span class="badge">${r.ingredientCount} ингредиент(ов),</span>
-      <span class="badge">${r.stepCount} шаг(ов)</span>
-    </div>
+      <p class="meta">
+        ${r.ingredientCount} ${plural(r.ingredientCount, ["ингредиент", "ингредиента", "ингредиентов"])}
+        <span class="dot">·</span>
+        ${r.stepCount} ${plural(r.stepCount, ["шаг", "шага", "шагов"])}
+      </p>
     </div>
 
     <h4>Ингредиенты</h4>
     <ul class="item-list">
-      ${r.ingredients.map((i, idx) => `
+      ${r.ingredients
+        .map(
+          (i, idx) => `
         <li>
           <span>${esc(i)}</span>
           <button class="btn-icon" data-action="remove-ingredient" data-index="${idx}" title="Удалить">×</button>
         </li>
-      `).join("")}
+      `,
+        )
+        .join("")}
     </ul>
     <div class="add-row">
-      <input data-input="ingredient" placeholder="Новый ингредиент">
+      <input type="text" data-input="ingredient" placeholder="Новый ингредиент" />
       <button type="button" class="btn-primary" data-action="add-ingredient" title="Добавить">+</button>
     </div>
 
     <h4>Шаги приготовления</h4>
     <ol class="item-list steps">
-      ${r.steps.map((s, idx) => `
+      ${r.steps
+        .map(
+          (s, idx) => `
         <li>
           <span>${esc(s)}</span>
           <button class="btn-icon" data-action="remove-step" data-index="${idx}" title="Удалить шаг">×</button>
         </li>
-      `).join("")}
+      `,
+        )
+        .join("")}
     </ol>
     <div class="add-row">
-      <input data-input="step" placeholder="Новый шаг">
+      <input type="text" data-input="step" placeholder="Новый шаг" />
       <button type="button" class="btn-primary" data-action="add-step" title="Добавить шаг">+</button>
     </div>
 
@@ -115,100 +136,12 @@ function cardHtml(r: Recipe): string {
   </article>`;
 }
 
-// ... (renderSummary и render остаются без изменений)
-
-// ---------- События ----------
-form.addEventListener("submit", async (e: SubmitEvent) => {
-  e.preventDefault();
-  const fd = new FormData(form);
-  const title = String(fd.get("title") ?? "").trim();
-  if (!title) return;
-  const split = (v: FormDataEntryValue | null, re: RegExp) =>
-    String(v ?? "").split(re).map((s) => s.trim()).filter(Boolean);
-
-  const recipe = new Recipe(title, split(fd.get("ingredients"), /[,\n]/), split(fd.get("steps"), /\n/));
-  form.reset();
-  await addRecipe(recipe);
-});
-
-list.addEventListener("click", async (e: MouseEvent) => {
-  const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("button[data-action]");
-  if (!btn) return;
-  
-  const card = btn.closest<HTMLElement>('[data-testid="entity-card"]')!;
-  const id = card.dataset.id!;
-  const action = btn.dataset.action!;
-
-  switch (action) {
-    case "delete-recipe":
-      await deleteRecipe(id);
-      break;
-      
-    case "add-ingredient": {
-      const input = card.querySelector<HTMLInputElement>('input[data-input="ingredient"]')!;
-      if (input.value.trim()) {
-        await addIngredient(id, input.value.trim());
-        input.value = ""; // Очищаем поле после добавления
-      }
-      break;
-    }
-    
-    case "remove-ingredient": {
-      const idx = Number(btn.dataset.index);
-      const recipe = byId(id);
-      // Находим значение по индексу и передаём его в вашу модель
-      if (recipe && recipe.ingredients[idx]) {
-        await removeIngredient(id, recipe.ingredients[idx]);
-      }
-      break;
-    }
-    
-    case "add-step": {
-      const input = card.querySelector<HTMLInputElement>('input[data-input="step"]')!;
-      if (input.value.trim()) {
-        await addStep(id, input.value.trim());
-        input.value = "";
-      }
-      break;
-    }
-    
-    case "remove-step": {
-      const idx = Number(btn.dataset.index);
-      // Ваша модель ожидает номер шага (с 1), поэтому передаём idx + 1
-      await removeStep(id, idx + 1);
-      break;
-    }
-  }
-});
-
-// Добавление по нажатию Enter в полях ввода
-// Добавление по нажатию Enter в полях ввода
-list.addEventListener("keypress", async (e: KeyboardEvent) => {
-  // Проверяем, что событие произошло именно в input и нажат Enter
-  if (e.key === "Enter" && e.target instanceof HTMLInputElement) {
-    const input = e.target;
-    
-    if (input.dataset.input === "ingredient") {
-      // Явно указываем тип HTMLElement, чтобы работал .click()
-      const btn = input.parentElement?.querySelector('[data-action="add-ingredient"]') as HTMLElement | null;
-      if (btn) btn.click();
-    } else if (input.dataset.input === "step") {
-      const btn = input.parentElement?.querySelector('[data-action="add-step"]') as HTMLElement | null;
-      if (btn) btn.click();
-    }
-  }
-});
-
-render();
-
 function renderSummary(): void {
-  const fmt = (m: Map<number, Recipe[]>) =>
-    [...m].sort((a, b) => a[0] - b[0]).map(([k, v]) => `${k}: ${v.length}`).join(", ") || "—";
-  
   const fmtDetailed = (m: Map<number, Recipe[]>) =>
-    [...m].sort((a, b) => a[0] - b[0]).map(([k, v]) => 
-      `${k} шт. — ${v.map(r => r.title).join(", ")}`
-    ).join("; ") || "—";
+    [...m]
+      .sort((a, b) => a[0] - b[0])
+      .map(([k, v]) => `${k} шт. — ${v.map((r) => r.title).join(", ")}`)
+      .join("; ") || "—";
 
   summary.innerHTML = `
     <div class="stat"><h5>Всего рецептов</h5><p class="big">${recipes.length}</p></div>
@@ -222,4 +155,91 @@ function render(): void {
   list.innerHTML = recipes.map(cardHtml).join("");
   renderSummary();
 }
+
+form.addEventListener("submit", async (e: SubmitEvent) => {
+  e.preventDefault();
+  const fd = new FormData(form);
+  const title = String(fd.get("title") ?? "").trim();
+  if (!title) {
+    return;
+  }
+  const split = (v: FormDataEntryValue | null, re: RegExp) =>
+    String(v ?? "")
+      .split(re)
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+  const recipe = new Recipe(title, split(fd.get("ingredients"), /[,\n]/), split(fd.get("steps"), /\n/));
+  form.reset();
+  await addRecipe(recipe);
+});
+
+list.addEventListener("click", async (e: MouseEvent) => {
+  const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("button[data-action]");
+  if (!btn) {
+    return;
+  }
+
+  const card = btn.closest<HTMLElement>('[data-testid="entity-card"]')!;
+  const id = card.dataset.id!;
+  const action = btn.dataset.action!;
+
+  switch (action) {
+    case "delete-recipe":
+      await deleteRecipe(id);
+      break;
+
+    case "add-ingredient": {
+      const input = card.querySelector<HTMLInputElement>('input[data-input="ingredient"]')!;
+      if (input.value.trim()) {
+        await addIngredient(id, input.value.trim());
+        input.value = "";
+      }
+      break;
+    }
+
+    case "remove-ingredient": {
+      const idx = Number(btn.dataset.index);
+      const recipe = byId(id);
+      if (recipe && recipe.ingredients[idx]) {
+        await removeIngredient(id, recipe.ingredients[idx]);
+      }
+      break;
+    }
+
+    case "add-step": {
+      const input = card.querySelector<HTMLInputElement>('input[data-input="step"]')!;
+      if (input.value.trim()) {
+        await addStep(id, input.value.trim());
+        input.value = "";
+      }
+      break;
+    }
+
+    case "remove-step": {
+      const idx = Number(btn.dataset.index);
+      await removeStep(id, idx + 1);
+      break;
+    }
+  }
+});
+
+list.addEventListener("keypress", async (e: KeyboardEvent) => {
+  if (e.key === "Enter" && e.target instanceof HTMLInputElement) {
+    const input = e.target;
+
+    if (input.dataset.input === "ingredient") {
+      const btn = input.parentElement?.querySelector('[data-action="add-ingredient"]') as HTMLElement | null;
+      if (btn) {
+        btn.click();
+      }
+    } else if (input.dataset.input === "step") {
+      const btn = input.parentElement?.querySelector('[data-action="add-step"]') as HTMLElement | null;
+      if (btn) {
+        btn.click();
+      }
+    }
+  }
+});
+
 render();
