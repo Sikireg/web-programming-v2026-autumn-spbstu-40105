@@ -8,15 +8,12 @@ import {
 
 const STORAGE_KEY = "recipes";
 
-// ---------- Состояние ----------
 let recipes: Recipe[] = load();
 
-// ---------- DOM ----------
 const list = document.querySelector<HTMLElement>('[data-testid="entity-list"]')!;
 const form = document.querySelector<HTMLFormElement>('form[data-testid="entity-form"]')!;
 const summary = document.querySelector<HTMLElement>("#summary")!;
 
-// ---------- Хранилище ----------
 function save(): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(recipes));
@@ -75,17 +72,15 @@ function esc(s: string): string {
   return s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 }
 
-// ... (ваш код импортов и состояния остаётся без изменений)
-
 function cardHtml(r: Recipe): string {
   return `
   <article class="card" data-testid="entity-card" data-id="${esc(r.id)}">
     <div class="card-head">
       <h3>${esc(r.title)}</h3>
       <div class="badges">
-        <span class="badge">🥕 ${r.ingredientCount}</span>
-        <span class="badge">📝 ${r.stepCount}</span>
-      </div>
+      <span class="badge">${r.ingredientCount} ингредиент(ов),</span>
+      <span class="badge">${r.stepCount} шаг(ов)</span>
+    </div>
     </div>
 
     <h4>Ингредиенты</h4>
@@ -208,13 +203,19 @@ render();
 
 function renderSummary(): void {
   const fmt = (m: Map<number, Recipe[]>) =>
-    [...m].sort((a, b) => a[0] - b[0]).map(([k, v]) => `${k} → ${v.length}`).join(", ") || "—";
+    [...m].sort((a, b) => a[0] - b[0]).map(([k, v]) => `${k}: ${v.length}`).join(", ") || "—";
+  
+  const fmtDetailed = (m: Map<number, Recipe[]>) =>
+    [...m].sort((a, b) => a[0] - b[0]).map(([k, v]) => 
+      `${k} шт. — ${v.map(r => r.title).join(", ")}`
+    ).join("; ") || "—";
+
   summary.innerHTML = `
     <div class="stat"><h5>Всего рецептов</h5><p class="big">${recipes.length}</p></div>
     <div class="stat"><h5>Названия</h5><p>${esc(getRecipeTitles(recipes).join(", ") || "—")}</p></div>
     <div class="stat"><h5>Уникальные ингредиенты</h5><p>${esc(getUniqueIngredients(recipes).join(", ") || "—")}</p></div>
-    <div class="stat"><h5>По числу ингредиентов</h5><p>${esc(fmt(groupRecipesByIngredientCount(recipes)))}</p></div>
-    <div class="stat"><h5>По числу шагов</h5><p>${esc(fmt(groupRecipesByStepCount(recipes)))}</p></div>`;
+    <div class="stat"><h5>По числу ингредиентов</h5><p>${esc(fmtDetailed(groupRecipesByIngredientCount(recipes)))}</p></div>
+    <div class="stat"><h5>По числу шагов</h5><p>${esc(fmtDetailed(groupRecipesByStepCount(recipes)))}</p></div>`;
 }
 
 function render(): void {
