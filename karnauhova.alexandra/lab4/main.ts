@@ -4,21 +4,25 @@ import {
   getRecipeTitles,
   groupRecipesByIngredientCount,
   groupRecipesByStepCount,
-} from "./model";
+} from './model';
 
-const STORAGE_KEY = "recipes";
+const STORAGE_KEY = 'recipes';
 
 let recipes: Recipe[] = load();
 
-const list = document.querySelector<HTMLElement>('[data-testid="entity-list"]')!;
-const form = document.querySelector<HTMLFormElement>('form[data-testid="entity-form"]')!;
-const summary = document.querySelector<HTMLElement>("#summary")!;
+const list = document.querySelector<HTMLElement>(
+  '[data-testid="entity-list"]',
+)!;
+const form = document.querySelector<HTMLFormElement>(
+  'form[data-testid="entity-form"]',
+)!;
+const summary = document.querySelector<HTMLElement>('#summary')!;
 
 function save(): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(recipes));
   } catch (e) {
-    console.warn("Не удалось сохранить", e);
+    console.warn('Не удалось сохранить', e);
   }
 }
 
@@ -33,8 +37,18 @@ function load(): Recipe[] {
       return [];
     }
     return data.map(
-      (d: { id?: string; title?: string; ingredients?: string[]; steps?: string[] }) =>
-        new Recipe(String(d.title ?? ""), d.ingredients ?? [], d.steps ?? [], d.id),
+      (d: {
+        id?: string;
+        title?: string;
+        ingredients?: string[];
+        steps?: string[];
+      }) =>
+        new Recipe(
+          String(d.title ?? ''),
+          d.ingredients ?? [],
+          d.steps ?? [],
+          d.id,
+        ),
     );
   } catch {
     return [];
@@ -62,11 +76,15 @@ async function mutate(action: () => void): Promise<void> {
 const byId = (id: string) => recipes.find((r) => r.id === id);
 
 const addRecipe = (r: Recipe) => mutate(() => void recipes.push(r));
-const deleteRecipe = (id: string) => mutate(() => void (recipes = recipes.filter((r) => r.id !== id)));
-const addIngredient = (id: string, v: string) => mutate(() => byId(id)?.addIngredient(v));
-const removeIngredient = (id: string, v: string) => mutate(() => byId(id)?.removeIngredient(v));
+const deleteRecipe = (id: string) =>
+  mutate(() => void (recipes = recipes.filter((r) => r.id !== id)));
+const addIngredient = (id: string, v: string) =>
+  mutate(() => byId(id)?.addIngredient(v));
+const removeIngredient = (id: string, v: string) =>
+  mutate(() => byId(id)?.removeIngredient(v));
 const addStep = (id: string, v: string) => mutate(() => byId(id)?.addStep(v));
-const removeStep = (id: string, n: number) => mutate(() => byId(id)?.removeStep(n - 1));
+const removeStep = (id: string, n: number) =>
+  mutate(() => byId(id)?.removeStep(n - 1));
 
 function esc(s: string): string {
   return s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
@@ -90,9 +108,9 @@ function cardHtml(r: Recipe): string {
     <div class="card-head">
       <h3>${esc(r.title)}</h3>
       <p class="meta">
-        ${r.ingredientCount} ${plural(r.ingredientCount, ["ингредиент", "ингредиента", "ингредиентов"])}
+        ${r.ingredientCount} ${plural(r.ingredientCount, ['ингредиент', 'ингредиента', 'ингредиентов'])}
         <span class="dot">·</span>
-        ${r.stepCount} ${plural(r.stepCount, ["шаг", "шага", "шагов"])}
+        ${r.stepCount} ${plural(r.stepCount, ['шаг', 'шага', 'шагов'])}
       </p>
     </div>
 
@@ -107,7 +125,7 @@ function cardHtml(r: Recipe): string {
         </li>
       `,
         )
-        .join("")}
+        .join('')}
     </ul>
     <div class="add-row">
       <input type="text" data-input="ingredient" placeholder="Новый ингредиент" />
@@ -125,7 +143,7 @@ function cardHtml(r: Recipe): string {
         </li>
       `,
         )
-        .join("")}
+        .join('')}
     </ol>
     <div class="add-row">
       <input type="text" data-input="step" placeholder="Новый шаг" />
@@ -140,42 +158,48 @@ function renderSummary(): void {
   const fmtDetailed = (m: Map<number, Recipe[]>) =>
     [...m]
       .sort((a, b) => a[0] - b[0])
-      .map(([k, v]) => `${k} шт. — ${v.map((r) => r.title).join(", ")}`)
-      .join("; ") || "—";
+      .map(([k, v]) => `${k} шт. — ${v.map((r) => r.title).join(', ')}`)
+      .join('; ') || '—';
 
   summary.innerHTML = `
     <div class="stat"><h5>Всего рецептов</h5><p class="big">${recipes.length}</p></div>
-    <div class="stat"><h5>Названия</h5><p>${esc(getRecipeTitles(recipes).join(", ") || "—")}</p></div>
-    <div class="stat"><h5>Уникальные ингредиенты</h5><p>${esc(getUniqueIngredients(recipes).join(", ") || "—")}</p></div>
+    <div class="stat"><h5>Названия</h5><p>${esc(getRecipeTitles(recipes).join(', ') || '—')}</p></div>
+    <div class="stat"><h5>Уникальные ингредиенты</h5><p>${esc(getUniqueIngredients(recipes).join(', ') || '—')}</p></div>
     <div class="stat"><h5>По числу ингредиентов</h5><p>${esc(fmtDetailed(groupRecipesByIngredientCount(recipes)))}</p></div>
     <div class="stat"><h5>По числу шагов</h5><p>${esc(fmtDetailed(groupRecipesByStepCount(recipes)))}</p></div>`;
 }
 
 function render(): void {
-  list.innerHTML = recipes.map(cardHtml).join("");
+  list.innerHTML = recipes.map(cardHtml).join('');
   renderSummary();
 }
 
-form.addEventListener("submit", async (e: SubmitEvent) => {
+form.addEventListener('submit', async (e: SubmitEvent) => {
   e.preventDefault();
   const fd = new FormData(form);
-  const title = String(fd.get("title") ?? "").trim();
+  const title = String(fd.get('title') ?? '').trim();
   if (!title) {
     return;
   }
   const split = (v: FormDataEntryValue | null, re: RegExp) =>
-    String(v ?? "")
+    String(v ?? '')
       .split(re)
       .map((s) => s.trim())
       .filter(Boolean);
 
-  const recipe = new Recipe(title, split(fd.get("ingredients"), /[,\n]/), split(fd.get("steps"), /\n/));
+  const recipe = new Recipe(
+    title,
+    split(fd.get('ingredients'), /[,\n]/),
+    split(fd.get('steps'), /\n/),
+  );
   form.reset();
   await addRecipe(recipe);
 });
 
-list.addEventListener("click", async (e: MouseEvent) => {
-  const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("button[data-action]");
+list.addEventListener('click', async (e: MouseEvent) => {
+  const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(
+    'button[data-action]',
+  );
   if (!btn) {
     return;
   }
@@ -185,20 +209,22 @@ list.addEventListener("click", async (e: MouseEvent) => {
   const action = btn.dataset.action!;
 
   switch (action) {
-    case "delete-recipe":
+    case 'delete-recipe':
       await deleteRecipe(id);
       break;
 
-    case "add-ingredient": {
-      const input = card.querySelector<HTMLInputElement>('input[data-input="ingredient"]')!;
+    case 'add-ingredient': {
+      const input = card.querySelector<HTMLInputElement>(
+        'input[data-input="ingredient"]',
+      )!;
       if (input.value.trim()) {
         await addIngredient(id, input.value.trim());
-        input.value = "";
+        input.value = '';
       }
       break;
     }
 
-    case "remove-ingredient": {
+    case 'remove-ingredient': {
       const idx = Number(btn.dataset.index);
       const recipe = byId(id);
       if (recipe && recipe.ingredients[idx]) {
@@ -207,16 +233,18 @@ list.addEventListener("click", async (e: MouseEvent) => {
       break;
     }
 
-    case "add-step": {
-      const input = card.querySelector<HTMLInputElement>('input[data-input="step"]')!;
+    case 'add-step': {
+      const input = card.querySelector<HTMLInputElement>(
+        'input[data-input="step"]',
+      )!;
       if (input.value.trim()) {
         await addStep(id, input.value.trim());
-        input.value = "";
+        input.value = '';
       }
       break;
     }
 
-    case "remove-step": {
+    case 'remove-step': {
       const idx = Number(btn.dataset.index);
       await removeStep(id, idx + 1);
       break;
@@ -224,17 +252,21 @@ list.addEventListener("click", async (e: MouseEvent) => {
   }
 });
 
-list.addEventListener("keypress", async (e: KeyboardEvent) => {
-  if (e.key === "Enter" && e.target instanceof HTMLInputElement) {
+list.addEventListener('keypress', async (e: KeyboardEvent) => {
+  if (e.key === 'Enter' && e.target instanceof HTMLInputElement) {
     const input = e.target;
 
-    if (input.dataset.input === "ingredient") {
-      const btn = input.parentElement?.querySelector('[data-action="add-ingredient"]') as HTMLElement | null;
+    if (input.dataset.input === 'ingredient') {
+      const btn = input.parentElement?.querySelector(
+        '[data-action="add-ingredient"]',
+      ) as HTMLElement | null;
       if (btn) {
         btn.click();
       }
-    } else if (input.dataset.input === "step") {
-      const btn = input.parentElement?.querySelector('[data-action="add-step"]') as HTMLElement | null;
+    } else if (input.dataset.input === 'step') {
+      const btn = input.parentElement?.querySelector(
+        '[data-action="add-step"]',
+      ) as HTMLElement | null;
       if (btn) {
         btn.click();
       }
