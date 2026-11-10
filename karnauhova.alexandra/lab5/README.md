@@ -1,92 +1,46 @@
-# Getting Started with Create React App
+# Лабораторная работа 5
 
-This project was bootstrapped with
-[Create React App](https://github.com/facebook/create-react-app).
+## Задание
 
-## Available Scripts
+**Задача 5. Создать простой калькулятор**
 
-In the project directory, you can run:
+Необходимо создать интерактивный калькулятор с базовыми арифметическими операциями (сложение, вычитание, умножение, деление) и дополнительными функциями (очистка, вычисление процентов, изменение знака). 
 
-### `npm start`
+**Функциональность:**
+- ввод чисел (кнопки 0-9);
+- базовые операции (сложение, вычитание, умножение, деление, вычисление результата, очистка);
+- дополнительные функции (вычисление процента от числа, изменение знака);
+- отображение текущего ввода и результата;
+- поддержка ввода с физической клавиатуры.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Реализация
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Решение реализовано на React с использованием функциональных компонентов и хуков. 
 
-### `npm test`
+**Структура проекта:**
+- `App.jsx` — корневой компонент. Отвечает за отрисовку интерфейса, подключение стилей и обработку событий с физической клавиатуры.
+- `Display.jsx` — компонент для отображения текущего математического выражения и итогового результата. Автоматически уменьшает шрифт для длинных чисел.
+- `Key.jsx` — переиспользуемый компонент кнопки, принимающий метку, стили и обработчик нажатия.
+- `calculator.js` — файл с бизнес-логикой. Содержит начальное состояние (`initialState`) и функцию-редьюсер (`reducer`), который обрабатывает все действия пользователя.
 
-Launches the test runner in the interactive watch mode.\
-See the section about
-[running tests](https://facebook.github.io/create-react-app/docs/running-tests)
-for more information.
+**Принятые архитектурные решения:**
+- Для управления состоянием выбран хук `useReducer` вместо набора `useState`. Логика калькулятора требует четкого отслеживания последовательности действий (ввод первого числа -> выбор операции -> ввод второго числа -> результат), и редьюсер делает эти переходы явными и предсказуемыми.
+- Поддержка клавиатуры реализована через глобальный слушатель `keydown` внутри хука `useEffect`, что позволяет пользователю работать с калькулятором без мыши.
+- Стилизация выполнена на чистом CSS с использованием CSS-переменных для гибкого управления цветовой палитрой и адаптивности.
 
-### `npm run build`
+## Запуск
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the
-best performance.
+Для запуска проекта локально выполните следующие шаги:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Убедитесь, что на вашем компьютере установлен Node.js (версия 16 или выше).
+2. Откройте терминал и перейдите в папку с проектом (`lab5`).
+3. Установите необходимые зависимости командой:
+   ```bash
+   npm install
+   ```
+4. Запустите сервер разработки:
+   ```bash
+   npm start
+   ```
+5. Откройте браузер и перейдите по адресу `http://localhost:3000`.
 
-See the section about
-[deployment](https://facebook.github.io/create-react-app/docs/deployment) for
-more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can
-`eject` at any time. This command will remove the single build dependency from
-your project.
-
-Instead, it will copy all the configuration files and the transitive
-dependencies (webpack, Babel, ESLint, etc) right into your project so you have
-full control over them. All of the commands except `eject` will still work, but
-they will point to the copied scripts so you can tweak them. At this point
-you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for
-small and middle deployments, and you shouldn't feel obligated to use this
-feature. However we understand that this tool wouldn't be useful if you couldn't
-customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the
-[Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here:
-[https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here:
-[https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here:
-[https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here:
-[https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here:
-[https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here:
-[https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
