@@ -1,10 +1,10 @@
 // Чистая логика калькулятора: reducer без обращения к DOM.
 
 export const OPERATIONS = {
-  add: { symbol: '+', apply: (a, b) => a + b },
-  subtract: { symbol: '−', apply: (a, b) => a - b },
-  multiply: { symbol: '×', apply: (a, b) => a * b },
-  divide: { symbol: '÷', apply: (a, b) => a / b },
+  add: {symbol: '+', apply: (a, b) => a + b},
+  subtract: {symbol: '−', apply: (a, b) => a - b},
+  multiply: {symbol: '×', apply: (a, b) => a * b},
+  divide: {symbol: '÷', apply: (a, b) => a / b},
 };
 
 export const ERROR = 'Ошибка';
@@ -43,7 +43,9 @@ export function reducer(state, action) {
       return {
         ...state,
         current:
-          state.current === '0' ? action.value : `${state.current}${action.value}`,
+          state.current === '0'
+            ? action.value
+            : `${state.current}${action.value}`,
       };
     }
 
@@ -59,7 +61,7 @@ export function reducer(state, action) {
       if (state.current.includes('.')) {
         return state;
       }
-      return { ...state, current: `${state.current}.` };
+      return {...state, current: `${state.current}.`};
     }
 
     case 'operation': {
@@ -82,7 +84,7 @@ export function reducer(state, action) {
       if (state.previous !== null && state.operation) {
         left = compute(state.previous, left, state.operation);
         if (!Number.isFinite(left)) {
-          return { ...initialState, current: ERROR };
+          return {...initialState, current: ERROR};
         }
       }
       return {
@@ -101,7 +103,7 @@ export function reducer(state, action) {
       const right = parseFloat(state.current);
       const result = compute(state.previous, right, state.operation);
       if (!Number.isFinite(result)) {
-        return { ...initialState, current: ERROR };
+        return {...initialState, current: ERROR};
       }
       return {
         current: format(result),
@@ -140,7 +142,7 @@ export function reducer(state, action) {
       const current = state.current.startsWith('-')
         ? state.current.slice(1)
         : `-${state.current}`;
-      return { ...state, current };
+      return {...state, current};
     }
 
     case 'backspace': {
@@ -148,7 +150,7 @@ export function reducer(state, action) {
         return state;
       }
       const next = state.current.slice(0, -1);
-      return { ...state, current: next === '' || next === '-' ? '0' : next };
+      return {...state, current: next === '' || next === '-' ? '0' : next};
     }
 
     case 'clear': {

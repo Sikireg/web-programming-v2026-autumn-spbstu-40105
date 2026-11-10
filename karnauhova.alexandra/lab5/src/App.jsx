@@ -14,31 +14,31 @@ export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   // Поддержка клавиатуры
-    useEffect(() => {
+  useEffect(() => {
     const onKeyDown = (e) => {
       if (e.ctrlKey || e.metaKey || e.altKey) {
         return;
       }
       const k = e.key;
       if (/^[0-9]$/.test(k)) {
-        dispatch({ type: "digit", value: k });
-      } else if (k === "." || k === ",") {
-        dispatch({ type: "decimal" });
+        dispatch({type: 'digit', value: k});
+      } else if (k === '.' || k === ',') {
+        dispatch({type: 'decimal'});
       } else if (KEY_TO_OPERATION[k]) {
-        dispatch({ type: "operation", value: KEY_TO_OPERATION[k] });
-      } else if (k === "Enter" || k === "=") {
+        dispatch({type: 'operation', value: KEY_TO_OPERATION[k]});
+      } else if (k === 'Enter' || k === '=') {
         e.preventDefault();
-        dispatch({ type: "equals" });
-      } else if (k === "%") {
-        dispatch({ type: "percent" });
-      } else if (k === "Backspace") {
-        dispatch({ type: "backspace" });
-      } else if (k === "Escape" || k === "Delete") {
-        dispatch({ type: "clear" });
+        dispatch({type: 'equals'});
+      } else if (k === '%') {
+        dispatch({type: 'percent'});
+      } else if (k === 'Backspace') {
+        dispatch({type: 'backspace'});
+      } else if (k === 'Escape' || k === 'Delete') {
+        dispatch({type: 'clear'});
       }
     };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
 
   const digit = (value) => (
