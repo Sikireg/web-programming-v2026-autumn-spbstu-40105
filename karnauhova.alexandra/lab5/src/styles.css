@@ -126,7 +126,6 @@ body {
   background: var(--op-hover);
 }
 
-/* выбранная операция подсвечивается, пока вводится второе число */
 .key.op.active {
   background: var(--text);
   color: var(--op);

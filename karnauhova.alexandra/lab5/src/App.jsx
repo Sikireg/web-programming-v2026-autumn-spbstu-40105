@@ -13,7 +13,6 @@ const KEY_TO_OPERATION = {
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // Поддержка клавиатуры
   useEffect(() => {
     const onKeyDown = (e) => {
       if (e.ctrlKey || e.metaKey || e.altKey) {

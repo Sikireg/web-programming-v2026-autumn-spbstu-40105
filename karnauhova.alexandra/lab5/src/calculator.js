@@ -1,5 +1,3 @@
-// Чистая логика калькулятора: reducer без обращения к DOM.
-
 export const OPERATIONS = {
   add: {symbol: '+', apply: (a, b) => a + b},
   subtract: {symbol: '−', apply: (a, b) => a - b},
@@ -12,13 +10,12 @@ const MAX_LENGTH = 15;
 
 export const initialState = {
   current: '0', // то, что показано на дисплее
-  previous: null, // первый операнд (число)
-  operation: null, // ключ из OPERATIONS
-  overwrite: false, // следующая цифра начинает новое число
-  expression: '', // строка над дисплеем: "2 + 3 ="
+  previous: null, // первый операнд 
+  operation: null, // ключ
+  overwrite: false, // следующая цифра
+  expression: '', // строка над дисплеем
 };
 
-// 0.1 + 0.2 -> 0.3, слишком большие/неверные значения -> "Ошибка"
 const format = (n) =>
   Number.isFinite(n) ? String(parseFloat(n.toPrecision(12))) : ERROR;
 
@@ -70,7 +67,6 @@ export function reducer(state, action) {
       }
       const symbol = OPERATIONS[action.value].symbol;
 
-      // Оператор нажат дважды подряд — просто меняем его
       if (state.previous !== null && state.operation && state.overwrite) {
         return {
           ...state,
@@ -80,7 +76,6 @@ export function reducer(state, action) {
       }
 
       let left = parseFloat(state.current);
-      // Цепочка 2 + 3 + ... — сначала считаем предыдущий шаг
       if (state.previous !== null && state.operation) {
         left = compute(state.previous, left, state.operation);
         if (!Number.isFinite(left)) {
@@ -124,9 +119,9 @@ export function reducer(state, action) {
         state.previous !== null &&
         (state.operation === 'add' || state.operation === 'subtract')
       ) {
-        result = (state.previous * value) / 100; // 200 + 10% -> 200 + 20
+        result = (state.previous * value) / 100;
       } else {
-        result = value / 100; // 50% -> 0.5
+        result = value / 100;
       }
       return {
         ...state,
